@@ -61,6 +61,7 @@ runs:
       
           echo "Extracted version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+      shell: bash
 
     - uses: glasskube/distr-create-version-action@v1
       id: create_version
