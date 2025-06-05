@@ -8,6 +8,12 @@ inputs:
   version:
     description: Version name
     required: true
+  application_ids:
+    description: Application IDs
+    required: true
+  lifecycle_api_token:
+    description: Lifecycle API Token
+    required: true
 
 permissions:
   id-token: write
@@ -24,7 +30,7 @@ runs:
     - name: Get Application ID 
       id: map_app_id
       run: |
-        APP_IDS="${{ vars.APPLICATION_IDS }}"
+        APP_IDS="${{ inputs.application_ids }}"
         CHART_NAME="${{ inputs.chart_name }}"
 
         # Search for the ID corresponding to the chart name
@@ -43,7 +49,7 @@ runs:
       id: create_version
       with:
         api-base: 'https://lifecycle.lerian.studio/api/v1'
-        api-token: ${{ secrets.LIFECYCLE_API_TOKEN }}
+        api-token: ${{ inputs.lifecycle_api_token }}
         application-id: ${{ steps.map_app_id.outputs.app_id }}
         version-name: ${{ inputs.version }}
         chart-type: 'oci'

@@ -27,8 +27,10 @@ To enable this action for a new Helm chart, you need to update the `APPLICATION_
 
 The action uses the following inputs:
 
-*   `chart_name` (required): The name of the Helm chart (e.g., `my-app`). This name must correspond to an entry in the `APPLICATION_IDS` variable.
+*   `chart_name` (required): The name of the Helm chart (e.g., `my-app`). This name must correspond to an entry in the `application_ids_from_workflow` input.
 *   `version` (required): The version of the release (e.g., `1.2.3`).
+*   `application_ids_from_workflow` (required): The string containing application ID mappings (e.g., `chart1:id1,chart2:id2`). This is typically passed from `vars.APPLICATION_IDS` in the calling workflow.
+*   `lifecycle_api_token_from_workflow` (required): The API token for the Lerian Studio Lifecycle API. This is typically passed from `secrets.LIFECYCLE_API_TOKEN` in the calling workflow.
 
 ## Example Workflow
 
@@ -49,4 +51,6 @@ jobs:
         with:
           chart_name: 'your-chart-name' # Replace with your chart name
           version: ${{ github.ref_name }} # Assumes tag is the version
+          application_ids_from_workflow: ${{ vars.APPLICATION_IDS }}
+          lifecycle_api_token_from_workflow: ${{ secrets.LIFECYCLE_API_TOKEN }}
 ```
