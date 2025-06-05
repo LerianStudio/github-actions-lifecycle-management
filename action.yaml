@@ -1,0 +1,52 @@
+name: Publish Release in Plugin Lifecycle Management
+description: Publish a release in the Plugin Lifecycle Management
+
+inputs:
+  chart_name:
+    description: Chart name
+    required: true
+  version:
+    description: Version name
+    required: true
+
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+
+runs:
+  using: composite
+  steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Get Application ID 
+      id: map_app_id
+      run: |
+        APP_IDS="${{ vars.APPLICATION_IDS }}"
+        CHART_NAME="${{ inputs.chart_name }}"
+
+        # Search for the ID corresponding to the chart name
+        APP_ID=$(echo "$APP_IDS" | tr ',' '\n' | sed 's/^[[:space:]]*//' | grep "^${CHART_NAME}:" | cut -d':' -f2)
+
+        if [ -z "$APP_ID" ]; then
+          echo "❌ Application ID not found for chart: $CHART_NAME"
+          exit 1
+        fi
+
+        echo "✅ Found Application ID: $APP_ID"
+        echo "app_id=$APP_ID" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - uses: glasskube/distr-create-version-action@v1
+      id: create_version
+      with:
+        api-base: 'https://lifecycle.lerian.studio/api/v1'
+        api-token: ${{ secrets.LIFECYCLE_API_TOKEN }}
+        application-id: ${{ steps.map_app_id.outputs.app_id }}
+        version-name: ${{ inputs.version }}
+        chart-type: 'oci'
+        chart-name: ${{ inputs.chart_name }}
+        chart-version: ${{ inputs.version }}
+        chart-url: 'oci://registry-1.docker.io/lerianstudio/${{ inputs.chart_name }}'
