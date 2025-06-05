@@ -45,14 +45,34 @@ runs:
         echo "app_id=$APP_ID" >> $GITHUB_OUTPUT
       shell: bash
 
+    - name: Get Release Version
+      id: get_release_version
+      run: |
+          CHART_NAME="${{ inputs.chart_name }}"
+      
+          TAG=$(git tag --list "${CHART_NAME}-v*" --sort=-v:refname | head -n 1)
+      
+          echo "Found tag: $TAG"
+      
+          if [ -z "$TAG" ]; then
+            echo "No tag found for chart $CHART_NAME"
+            echo "version=" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+      
+          VERSION="${TAG#${CHART_NAME}-v}"
+      
+          echo "Extracted version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
     - uses: glasskube/distr-create-version-action@v1
       id: create_version
       with:
         api-base: 'https://lifecycle.lerian.studio/api/v1'
         api-token: ${{ inputs.lifecycle_api_token }}
         application-id: ${{ steps.map_app_id.outputs.app_id }}
-        version-name: ${{ inputs.version }}
+        version-name: ${{ steps.get_release_version.outputs.version }}
         chart-type: 'oci'
         chart-name: ${{ inputs.chart_name }}
-        chart-version: ${{ inputs.version }}
+        chart-version: ${{ steps.get_release_version.outputs.version }}
         chart-url: 'oci://registry-1.docker.io/lerianstudio/${{ inputs.chart_name }}'
