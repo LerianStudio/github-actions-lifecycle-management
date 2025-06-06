@@ -45,22 +45,22 @@ runs:
     - name: Get Release Version
       id: get_release_version
       run: |
-          CHART_NAME="${{ inputs.chart_name }}"
-      
-          TAG=$(git tag --list "${CHART_NAME}-v*" --sort=-v:refname | head -n 1)
-      
-          echo "Found tag: $TAG"
-      
-          if [ -z "$TAG" ]; then
-            echo "No tag found for chart $CHART_NAME"
-            echo "version=" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-      
-          VERSION="${TAG#${CHART_NAME}-v}"
-      
-          echo "Extracted version: $VERSION"
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+        CHART_NAME="${{ inputs.chart_name }}"
+
+        TAG=$(git tag --list "${CHART_NAME}-v*" | grep -E "${CHART_NAME}-v[0-9]+\.[0-9]+\.[0-9]+$" | sort -Vr | head -n 1)
+
+        echo "Found tag: $TAG"
+
+        if [ -z "$TAG" ]; then
+          echo "No tag found for chart $CHART_NAME"
+          echo "version=" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+
+        VERSION="${TAG#${CHART_NAME}-v}"
+
+        echo "Extracted version: $VERSION"
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
       shell: bash
 
     - uses: glasskube/distr-create-version-action@v1
