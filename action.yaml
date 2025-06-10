@@ -11,6 +11,9 @@ inputs:
   lifecycle_api_token:
     description: Lifecycle API Token
     required: true
+  working_directory:
+    description: Working directory
+    required: true
 
 permissions:
   id-token: write
@@ -74,3 +77,4 @@ runs:
         chart-name: ${{ inputs.chart_name }}
         chart-version: ${{ steps.get_release_version.outputs.version }}
         chart-url: 'oci://registry-1.docker.io/lerianstudio/${{ inputs.chart_name }}'
+        template-file: '${{ inputs.working_directory }}/example/values-template.yaml'
