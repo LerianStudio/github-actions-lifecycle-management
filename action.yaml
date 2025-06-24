@@ -76,5 +76,5 @@ runs:
         chart-type: 'oci'
         chart-name: ${{ inputs.chart_name }}
         chart-version: ${{ steps.get_release_version.outputs.version }}
-        chart-url: 'oci://registry-1.docker.io/lerianstudio/${{ inputs.chart_name }}-helm'
+        chart-url: 'oci://registry-1.docker.io/lerianstudio/${{ inputs.chart_name }}'
         template-file: '${{ inputs.working_directory }}/values-template.yaml'
