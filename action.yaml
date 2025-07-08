@@ -65,6 +65,16 @@ runs:
         echo "Extracted version: $VERSION"
         echo "version=$VERSION" >> $GITHUB_OUTPUT
       shell: bash
+    
+    - name: Chart URL
+      id: chart_url
+      run: |
+        if [ "${{ inputs.chart_name }}" == "plugin-access-manager" ]; then
+          echo "chart_url=oci://registry-1.docker.io/lerianstudio/${{ inputs.chart_name }}" >> $GITHUB_OUTPUT
+        else
+          echo "chart_url=oci://registry-1.docker.io/lerianstudio/${{ inputs.chart_name }}-helm" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
 
     - uses: glasskube/distr-create-version-action@v1
       id: create_version
@@ -76,5 +86,5 @@ runs:
         chart-type: 'oci'
         chart-name: ${{ inputs.chart_name }}
         chart-version: ${{ steps.get_release_version.outputs.version }}
-        chart-url: 'oci://registry-1.docker.io/lerianstudio/${{ inputs.chart_name }}'
+        chart-url: ${{ steps.chart_url.outputs.chart_url }}
         template-file: '${{ inputs.working_directory }}/values-template.yaml'
