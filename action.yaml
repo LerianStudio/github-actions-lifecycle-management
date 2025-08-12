@@ -78,6 +78,7 @@ runs:
 
     - uses: glasskube/distr-create-version-action@v1
       id: create_version
+      if: ${{ inputs.chart_name != 'otel-collector' && steps.get_release_version.outputs.version != '' }}
       continue-on-error: true 
       with:
         api-base: 'https://lifecycle.lerian.studio/api/v1'
