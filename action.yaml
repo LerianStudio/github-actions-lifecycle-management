@@ -78,6 +78,7 @@ runs:
 
     - uses: glasskube/distr-create-version-action@v1
       id: create_version
+      continue-on-error: true 
       with:
         api-base: 'https://lifecycle.lerian.studio/api/v1'
         api-token: ${{ inputs.lifecycle_api_token }}
