@@ -29,6 +29,7 @@ runs:
 
     - name: Get Application ID 
       id: map_app_id
+      if: ${{ inputs.chart_name != 'otel-collector' }}
       run: |
         APP_IDS="${{ inputs.application_ids }}"
         CHART_NAME="${{ inputs.chart_name }}"
@@ -47,6 +48,7 @@ runs:
 
     - name: Get Release Version
       id: get_release_version
+      if: ${{ inputs.chart_name != 'otel-collector' }}
       run: |
         CHART_NAME="${{ inputs.chart_name }}"
 
@@ -68,6 +70,7 @@ runs:
     
     - name: Chart URL
       id: chart_url
+      if: ${{ inputs.chart_name != 'otel-collector' }}
       run: |
         if [ "${{ inputs.chart_name }}" == "plugin-access-manager" ]; then
           echo "chart_url=oci://registry-1.docker.io/lerianstudio/${{ inputs.chart_name }}" >> $GITHUB_OUTPUT
