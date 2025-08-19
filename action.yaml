@@ -29,7 +29,7 @@ runs:
 
     - name: Get Application ID 
       id: map_app_id
-      if: ${{ inputs.chart_name != 'otel-collector' }}
+      if: ${{ inputs.chart_name != 'otel-collector-lerian' }}
       run: |
         APP_IDS="${{ inputs.application_ids }}"
         CHART_NAME="${{ inputs.chart_name }}"
@@ -48,7 +48,7 @@ runs:
 
     - name: Get Release Version
       id: get_release_version
-      if: ${{ inputs.chart_name != 'otel-collector' }}
+      if: ${{ inputs.chart_name != 'otel-collector-lerian' }}
       run: |
         CHART_NAME="${{ inputs.chart_name }}"
 
@@ -70,7 +70,7 @@ runs:
     
     - name: Chart URL
       id: chart_url
-      if: ${{ inputs.chart_name != 'otel-collector' }}
+      if: ${{ inputs.chart_name != 'otel-collector-lerian' }}
       run: |
         if [ "${{ inputs.chart_name }}" == "plugin-access-manager" ]; then
           echo "chart_url=oci://registry-1.docker.io/lerianstudio/${{ inputs.chart_name }}" >> $GITHUB_OUTPUT
@@ -81,7 +81,7 @@ runs:
 
     - uses: glasskube/distr-create-version-action@v1
       id: create_version
-      if: ${{ inputs.chart_name != 'otel-collector' && steps.get_release_version.outputs.version != '' }}
+      if: ${{ inputs.chart_name != 'otel-collector-lerian' && steps.get_release_version.outputs.version != '' }}
       continue-on-error: true 
       with:
         api-base: 'https://lifecycle.lerian.studio/api/v1'
